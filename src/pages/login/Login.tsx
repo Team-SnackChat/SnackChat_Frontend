@@ -6,6 +6,10 @@ import {
   THEME_DARK_COLOR,
 } from '../../assets/colors';
 
+const KAKAO_REST_API_KEY = process.env.REACT_APP_KAKAO_LOGIN_API_KEY;
+const KAKAO_REDIRECT_URI = process.env.REACT_APP_KAKAO_REDIRECT_URI;
+const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id=${KAKAO_REST_API_KEY}&redirect_uri=${KAKAO_REDIRECT_URI}&response_type=code`;
+
 const LoginButton = styled.button`
   width: 20rem;
   background-color: ${THEME_DARK_COLOR};
@@ -58,6 +62,10 @@ const LoginMainTypo = styled(DefaultP)`
   color: #b4b6ba;
 `;
 
+const handleClickLoginButton = () => {
+  window.location.href = KAKAO_AUTH_URL;
+};
+
 export default function Login() {
   return (
     <LoginDiv>
@@ -66,7 +74,7 @@ export default function Login() {
           <LoginTitleTypo>만나서 반갑습니다!</LoginTitleTypo>
           <LoginMainTypo>소셜로그인을 이용해주세요</LoginMainTypo>
         </LoginInfoDiv>
-        <LoginButton>
+        <LoginButton onClick={handleClickLoginButton}>
           <DefaultBoldP>카카오 로그인</DefaultBoldP>
         </LoginButton>
       </LoginContent>
