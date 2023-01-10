@@ -1,6 +1,5 @@
 import styled from 'styled-components';
 import HomeIcon from '../../../assets/images/home.svg';
-import { DefaultP } from '../../../assets/styles';
 import { MAIN_COLOR_BASE } from '../../../assets/colors';
 
 const SimpleNav = styled.nav`
