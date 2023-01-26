@@ -41,14 +41,39 @@ export default function KakaoLoading() {
   useEffect(() => {
     console.log(`accessTokenLog:${accessTokenLog}`);
     console.log(`refreshTokenLog:${refreshTokenLog}`);
+    const accessTokenDetail = getTokenJson(accessTokenLog);
+    const refreshTokenDetail = getTokenJson(refreshTokenLog);
+    console.dir(`accessTokenDetail:${accessTokenDetail.nickname}`);
+    console.dir(`refreshTokenDetail:${refreshTokenDetail.nickname}`);
   }, [accessTokenLog, refreshTokenLog]);
 
   useEffect(() => {
     const tmpFunc = async () => {
+      console.log('tmpFunc');
       await store.dispatch(asyncGetToken(KAKAO_AUTHORIZATION_CODE));
     };
     tmpFunc().then((r) => console.log(r));
   }, []);
+
+  const getTokenJson = (token: string | null) => {
+    if (token) {
+      const tokenPayload = token
+        .split('.')[1]
+        .replace(/-/g, '+')
+        .replace(/_/g, '/');
+      const payloadDecode = decodeURIComponent(
+        atob(tokenPayload)
+          .split('')
+          .map((c) => {
+            const tmp = `00${c.charCodeAt(0).toString(16)}`.slice(-2);
+            return `%${tmp}`;
+          })
+          .join(''),
+      );
+      return JSON.parse(payloadDecode);
+    }
+    return null;
+  };
 
   return (
     <KakaoLoadingDiv>
