@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import store, { RootStateType } from '../../../store/configureStore';
 import { asyncGetToken } from '../../../store/reducers/getTokenReducer';
 import { MAIN_COLOR_BASE } from '../../../assets/colors';
+import { LoadingContents } from '../../../components/loading-contents';
 
 interface TokenResponseType {
   refresh: string;
@@ -84,5 +85,9 @@ export default function KakaoLoading() {
     return { email: '', nickname: '', user_id: -1 };
   };
 
-  return <KakaoLoadingDiv />;
+  return (
+    <KakaoLoadingDiv>
+      <LoadingContents />
+    </KakaoLoadingDiv>
+  );
 }
