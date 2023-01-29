@@ -9,7 +9,7 @@ const bounce = keyframes`
     transform: translateY(0);
   }
   50% {
-    transform: translateY(-1rem);
+    transform: translateY(-2rem);
   }
   100% {
     transform: translateY(0);
@@ -28,7 +28,7 @@ const LoadingCircle = styled.div<LoadingCircleProps>`
   height: 2rem;
   border-radius: 50%;
   margin: 0 1rem;
-  animation: ${bounce} 1s ease-in-out infinite,
+  animation: ${bounce} 1.5s ease-in-out infinite,
     color-change 5s ease-in-out infinite;
   animation-delay: ${(props) => props.delay}s;
   background-color: #e9a854;
@@ -50,9 +50,9 @@ const LoadingCircle = styled.div<LoadingCircleProps>`
 const LoadingContents = () => (
   <LoadingContainer>
     <LoadingCircle delay={0} />
-    <LoadingCircle delay={0.2} />
-    <LoadingCircle delay={0.4} />
+    <LoadingCircle delay={0.3} />
     <LoadingCircle delay={0.6} />
+    <LoadingCircle delay={0.9} />
   </LoadingContainer>
 );
 

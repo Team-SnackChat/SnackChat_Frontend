@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import store, { RootStateType } from '../../../store/configureStore';
 import { asyncGetToken } from '../../../store/reducers/getTokenReducer';
@@ -38,6 +38,7 @@ const KakaoLoadingDiv = styled.div`
 // };
 
 export default function KakaoLoading() {
+  const navigate = useNavigate();
   const location = useLocation();
   const KAKAO_AUTHORIZATION_CODE = location.search.split('=')[1];
 
@@ -61,8 +62,12 @@ export default function KakaoLoading() {
       await store.dispatch(asyncGetToken(KAKAO_AUTHORIZATION_CODE));
     };
 
-    asyncGetTokenWrapper().then((r) => console.log(r));
-  }, [KAKAO_AUTHORIZATION_CODE]);
+    if (accessTokenLog) {
+      navigate('/home');
+    } else {
+      asyncGetTokenWrapper().then(() => {});
+    }
+  }, [KAKAO_AUTHORIZATION_CODE, navigate, accessTokenLog]);
 
   const getTokenJson = (token: string | null): TokenType => {
     if (token) {
