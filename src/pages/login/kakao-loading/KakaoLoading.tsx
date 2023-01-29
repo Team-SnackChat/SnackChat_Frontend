@@ -6,18 +6,7 @@ import store, { RootStateType } from '../../../store/configureStore';
 import { asyncGetToken } from '../../../store/reducers/getTokenReducer';
 import { MAIN_COLOR_BASE } from '../../../assets/colors';
 import { LoadingContents } from '../../../components/loading-contents';
-
-interface TokenResponseType {
-  refresh: string;
-  access: string;
-  msg: string;
-}
-
-interface TokenType {
-  email: string;
-  nickname: string;
-  user_id: number;
-}
+import { parseToken } from '../../../services/snackchat-api';
 
 const KakaoLoadingDiv = styled.div`
   width: 100vw;
@@ -45,20 +34,9 @@ export default function KakaoLoading() {
   const accessTokenLog = useSelector(
     (state: RootStateType) => state.getToken.accessToken,
   );
-  const refreshTokenLog = useSelector(
-    (state: RootStateType) => state.getToken.refreshToken,
-  );
-
-  useEffect(() => {
-    const accessTokenDetail = getTokenJson(accessTokenLog);
-    const refreshTokenDetail = getTokenJson(refreshTokenLog);
-    console.dir(`accessTokenDetail:${accessTokenDetail.nickname}`);
-    console.dir(`refreshTokenDetail:${refreshTokenDetail.nickname}`);
-  }, [accessTokenLog, refreshTokenLog]);
 
   useEffect(() => {
     const asyncGetTokenWrapper = async () => {
-      console.log('tmpFunc');
       await store.dispatch(asyncGetToken(KAKAO_AUTHORIZATION_CODE));
     };
 
@@ -68,27 +46,6 @@ export default function KakaoLoading() {
       asyncGetTokenWrapper().then(() => {});
     }
   }, [KAKAO_AUTHORIZATION_CODE, navigate, accessTokenLog]);
-
-  const getTokenJson = (token: string | null): TokenType => {
-    if (token) {
-      const tokenPayload = token
-        .split('.')[1]
-        .replace(/-/g, '+')
-        .replace(/_/g, '/');
-      const payloadDecode = decodeURIComponent(
-        window
-          .atob(tokenPayload)
-          .split('')
-          .map((c) => {
-            const tmp = `00${c.charCodeAt(0).toString(16)}`.slice(-2);
-            return `%${tmp}`;
-          })
-          .join(''),
-      );
-      return JSON.parse(payloadDecode);
-    }
-    return { email: '', nickname: '', user_id: -1 };
-  };
 
   return (
     <KakaoLoadingDiv>

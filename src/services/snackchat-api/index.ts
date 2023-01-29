@@ -27,3 +27,36 @@ export const postAuthorizationCode = async (
   }
   return '';
 };
+
+export interface TokenResponseType {
+  refresh: string;
+  access: string;
+  msg: string;
+}
+
+export interface TokenType {
+  email: string;
+  nickname: string;
+  user_id: number;
+}
+
+export const parseToken = (token: string | null): TokenType => {
+  if (token) {
+    const tokenPayload = token
+      .split('.')[1]
+      .replace(/-/g, '+')
+      .replace(/_/g, '/');
+    const payloadDecode = decodeURIComponent(
+      window
+        .atob(tokenPayload)
+        .split('')
+        .map((c) => {
+          const tmp = `00${c.charCodeAt(0).toString(16)}`.slice(-2);
+          return `%${tmp}`;
+        })
+        .join(''),
+    );
+    return JSON.parse(payloadDecode);
+  }
+  return { email: '', nickname: '', user_id: -1 };
+};
