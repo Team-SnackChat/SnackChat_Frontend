@@ -42,7 +42,7 @@ export default function NavSimple() {
   return (
     <SimpleNav>
       <TestDiv>
-        <img alt="" src={HomeIcon} width="100%" height="auto" />
+        <img alt="home-button" src={HomeIcon} width="100%" height="auto" />
       </TestDiv>
     </SimpleNav>
   );

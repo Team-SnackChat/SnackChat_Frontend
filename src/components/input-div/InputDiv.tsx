@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { ChangeEvent } from 'react';
+import { ChangeEvent, KeyboardEvent } from 'react';
 import { useEditableDiv } from '../../hooks';
 import {
   TEXT_FIELD_COLOR,
@@ -32,7 +32,7 @@ const CustomInputDiv = styled.div`
 `;
 
 export default function InputDiv({ backgroundColor }: InputDivProps) {
-  const { content, setContent, onInput, $contentEditable } =
+  const { content, onInput, $contentEditable, resetContent } =
     useEditableDiv(null);
 
   const handleResizeChange = () => {
@@ -49,12 +49,33 @@ export default function InputDiv({ backgroundColor }: InputDivProps) {
     handleResizeChange();
   };
 
+  const handleCustomDivKeyPress = (event: KeyboardEvent<HTMLDivElement>) => {
+    if (event.key === 'Enter') {
+      if (content?.innerText) {
+        console.log('---------');
+      }
+      event.preventDefault();
+      resetContent();
+      if ($contentEditable.current) {
+        $contentEditable.current.style.height = 'auto';
+      }
+    }
+  };
+
+  const handleCustomDivBlur = () => {
+    if ($contentEditable.current) {
+      $contentEditable.current.style.height = 'auto';
+    }
+  };
+
   return (
     <CustomInputDiv
       contentEditable
       suppressContentEditableWarning
       ref={$contentEditable}
       onInput={handleCustomDivInputChange}
+      onKeyPress={handleCustomDivKeyPress}
+      onBlur={handleCustomDivBlur}
       backgroundColor={backgroundColor}
     />
   );

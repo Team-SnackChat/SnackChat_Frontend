@@ -6,6 +6,7 @@ export const useEditableDiv = (initial: HTMLDivElement | null) => {
 
   const onInput = (event: ChangeEvent<HTMLDivElement>) => {
     _setContent(event.target);
+    $contentEditable.current = event.target;
     // console.dir(event.target);
     // console.log(event.target.innerText);
   };
@@ -17,8 +18,15 @@ export const useEditableDiv = (initial: HTMLDivElement | null) => {
     }
   };
 
+  const resetContent = () => {
+    if ($contentEditable.current) {
+      $contentEditable.current.innerText = '';
+    }
+    _setContent(null);
+  };
+
   useEffect(() => {
     setContent(initial);
   }, [initial]);
-  return { content, setContent, onInput, $contentEditable };
+  return { content, setContent, onInput, $contentEditable, resetContent };
 };

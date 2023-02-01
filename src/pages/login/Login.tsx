@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import styled from 'styled-components';
+import axios from 'axios';
 import { DefaultP, DefaultBoldP } from '../../assets/styles';
 import {
   MAIN_COLOR_BASE,
@@ -67,6 +68,11 @@ const handleClickLoginButton = () => {
   window.location.href = KAKAO_AUTH_URL;
 };
 
+const testInstance = axios.create({
+  baseURL: 'https://carrotww.shop',
+  withCredentials: true,
+});
+
 export default function Login() {
   useEffect(() => {
     console.log(KAKAO_REDIRECT_URL);
@@ -80,6 +86,14 @@ export default function Login() {
         </LoginInfoDiv>
         <LoginButton onClick={handleClickLoginButton}>
           <DefaultBoldP>카카오 로그인</DefaultBoldP>
+        </LoginButton>
+        <LoginButton
+          onClick={async () => {
+            const response = await testInstance.get('/users/test/');
+            console.dir(response);
+          }}
+        >
+          <DefaultBoldP>테스트</DefaultBoldP>
         </LoginButton>
       </LoginContent>
     </LoginDiv>
