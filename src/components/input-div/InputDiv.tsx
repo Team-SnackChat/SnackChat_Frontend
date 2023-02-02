@@ -50,7 +50,7 @@ export default function InputDiv({ backgroundColor }: InputDivProps) {
   };
 
   const handleCustomDivKeyPress = (event: KeyboardEvent<HTMLDivElement>) => {
-    if (event.key === 'Enter') {
+    if (event.key === 'Enter' && !event.shiftKey) {
       if (content?.innerText) {
         console.log('---------');
       }
