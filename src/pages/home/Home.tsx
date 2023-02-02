@@ -25,7 +25,7 @@ export default function Home() {
   );
 
   useEffect(() => {
-    console.log(parseToken(accessTokenLog));
+    console.log(accessTokenLog);
     console.log(parseToken(refreshTokenLog));
   }, [accessTokenLog, refreshTokenLog]);
   return (

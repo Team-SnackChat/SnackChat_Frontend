@@ -25,6 +25,8 @@ const CustomInputDiv = styled.div`
   color: white;
   display: flex;
   align-items: center;
+  word-wrap: break-word;
+  word-break: break-word;
 
   &:focus {
     background-color: ${TEXT_FIELD_COLOR};
