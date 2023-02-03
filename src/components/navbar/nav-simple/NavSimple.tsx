@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import styled from 'styled-components';
-import { getServerList } from '../../../services/snackchat-api/getServerList';
+import { asyncGetServerList } from '../../../store/reducers/getServerReducer';
 import HomeIcon from '../../../assets/images/home.svg';
 import DefaultServerIcon from '../../../assets/images/default-server.svg';
 import { MAIN_COLOR_BASE } from '../../../assets/colors';
-import { RootStateType } from '../../../store/configureStore';
+import store, { RootStateType } from '../../../store/configureStore';
 import { getChatRoomList } from '../../../services/snackchat-api/getChatRoomList';
 
 const SNACKCHAT_API_URL = process.env.REACT_APP_SNACKCHAT_API_URL;
@@ -40,7 +40,7 @@ const Divider = styled.hr`
   border-top: 0.1rem solid #bbb;
 `;
 
-const TestDiv = styled.div`
+const ServerProfileDiv = styled.div`
   width: 3rem;
   height: 3rem;
   border-radius: 30%;
@@ -54,55 +54,63 @@ const TestDiv = styled.div`
   }
 `;
 
+const ServerProfile = ({
+  serverList,
+  accessToken,
+}: {
+  serverList: Array<any>;
+  accessToken: string | null;
+}) => (
+  <>
+    {serverList.map((serverInfo: any) => (
+      <div key={serverInfo.id} style={{ margin: '0.4rem 0' }}>
+        <ServerProfileDiv>
+          <img
+            alt="server-img"
+            src={`${SNACKCHAT_API_URL}${serverInfo.server_profile}`}
+            onError={(event) => {
+              event.currentTarget.src = DefaultServerIcon;
+            }}
+          />
+        </ServerProfileDiv>
+      </div>
+    ))}
+  </>
+);
+
 export default function NavSimple() {
   const accessToken = useSelector(
     (state: RootStateType) => state.getToken.accessToken,
   );
-  const [serverList, setServerList] = useState([]);
+  const serverList = useSelector(
+    (state: RootStateType) => state.getServerList.serverList,
+  );
+
+  const selectedServer = useSelector(
+    (state: RootStateType) => state.getServerList.selectedServer,
+  );
 
   useEffect(() => {
-    const asyncGetServerList = async () => {
+    console.log(selectedServer);
+  }, [selectedServer]);
+
+  useEffect(() => {
+    const asyncGetServerListWrapper = async () => {
       if (accessToken) {
-        const response = await getServerList({ token: accessToken });
-        console.log(response);
-        return response;
+        await store.dispatch(asyncGetServerList(accessToken));
       }
-      return null;
     };
-    asyncGetServerList().then((r) => {
-      setServerList(r);
-    });
+    asyncGetServerListWrapper().then(() => {});
   }, [accessToken]);
+
   return (
     <SimpleNav>
-      <TestDiv>
+      <ServerProfileDiv>
         <img alt="home-button" src={HomeIcon} width="100%" height="auto" />
-      </TestDiv>
+      </ServerProfileDiv>
       <Divider />
       {serverList ? (
-        serverList.map((serverInfo: any) => (
-          <div key={serverInfo.id} style={{ margin: '0.25rem 0' }}>
-            <TestDiv
-              onClick={async () => {
-                if (accessToken) {
-                  const response = await getChatRoomList({
-                    token: accessToken,
-                    serverId: serverInfo.id,
-                  });
-                  console.dir(response);
-                }
-              }}
-            >
-              <img
-                alt="server-img"
-                src={`${SNACKCHAT_API_URL}${serverInfo.server_profile}`}
-                onError={(event) => {
-                  event.currentTarget.src = DefaultServerIcon;
-                }}
-              />
-            </TestDiv>
-          </div>
-        ))
+        <ServerProfile serverList={serverList} accessToken={accessToken} />
       ) : (
         <div />
       )}
