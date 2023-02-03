@@ -1,4 +1,4 @@
-import { postAuthorizationCode } from '../../services/snackchat-api';
+import { postAuthorizationCode } from '../../services/snackchat-api/getToken';
 
 interface GetTokenProps {
   authCode: string;

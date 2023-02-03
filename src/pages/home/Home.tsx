@@ -6,7 +6,7 @@ import { SideInfo } from '../../components/side-info';
 import { HomeContentsText } from '../../components/home-contents';
 import { MAIN_COLOR_BASE } from '../../assets/colors';
 import { RootStateType } from '../../store/configureStore';
-import { parseToken } from '../../services/snackchat-api';
+import { parseToken } from '../../services/snackchat-api/getToken';
 
 const HomeDiv = styled.div`
   width: 100vw;

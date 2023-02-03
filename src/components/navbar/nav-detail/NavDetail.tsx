@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { DefaultP, DefaultPCustom, DefaultBoldP } from '../../../assets/styles';
 import { MAIN_COLOR_BASE, MAIN_COLOR_DARK } from '../../../assets/colors';
 import { RootStateType } from '../../../store/configureStore';
-import { parseToken } from '../../../services/snackchat-api';
+import { parseToken } from '../../../services/snackchat-api/getToken';
 import UserDefaultProfile from '../../../assets/images/user_default_profile.svg';
 
 const DetailNav = styled.nav`

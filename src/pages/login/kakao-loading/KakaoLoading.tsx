@@ -6,7 +6,7 @@ import store, { RootStateType } from '../../../store/configureStore';
 import { asyncGetToken } from '../../../store/reducers/getTokenReducer';
 import { MAIN_COLOR_BASE } from '../../../assets/colors';
 import { LoadingContents } from '../../../components/loading-contents';
-import { parseToken } from '../../../services/snackchat-api';
+import { parseToken } from '../../../services/snackchat-api/getToken';
 
 const KakaoLoadingDiv = styled.div`
   width: 100vw;

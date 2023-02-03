@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { postAuthorizationCode } from '../../services/snackchat-api';
+import { postAuthorizationCode } from '../../services/snackchat-api/getToken';
 
 const initialState = {
   refreshToken: null,
