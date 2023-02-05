@@ -3,7 +3,8 @@ import { getServerList } from '../../services/snackchat-api/getServerList';
 
 const initialState = {
   serverList: [],
-  selectedServer: -1,
+  selectedServerName: '',
+  selectedServerId: -1,
   status: 'Default',
 };
 
@@ -27,7 +28,12 @@ const asyncGetServerList = createAsyncThunk(
 const getServerListSlice = createSlice({
   name: 'getServerList',
   initialState,
-  reducers: {},
+  reducers: {
+    select: (state, action) => {
+      state.selectedServerName = action.payload.serverName;
+      state.selectedServerId = action.payload.serverId;
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(asyncGetServerList.pending, (state) => {
       state.status = 'Loading';
@@ -37,7 +43,8 @@ const getServerListSlice = createSlice({
       state.status = 'Complete';
       if (state.serverList.length > 0) {
         const firstServer: getServerResponse = state.serverList[0];
-        state.selectedServer = firstServer.id;
+        state.selectedServerName = firstServer.server_name;
+        state.selectedServerId = firstServer.id;
       }
     });
     builder.addCase(asyncGetServerList.rejected, (state) => {
@@ -47,4 +54,5 @@ const getServerListSlice = createSlice({
 });
 
 export default getServerListSlice;
+export const { select } = getServerListSlice.actions;
 export { asyncGetServerList };

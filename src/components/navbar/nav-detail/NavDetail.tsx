@@ -17,6 +17,19 @@ const DetailNav = styled.nav`
   justify-content: space-between;
 `;
 
+const ServerNameDiv = styled.div`
+  margin: 1rem;
+  display: flex;
+  align-items: center;
+`;
+
+const ChatListNav = styled.nav`
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
 const UserProfileWrapper = styled.div`
   display: flex;
   padding: 0.8rem;
@@ -53,38 +66,43 @@ export default function NavDetail() {
   const accessToken = useSelector(
     (state: RootStateType) => state.getToken.accessToken,
   );
-  const selectedServer = useSelector(
-    (state: RootStateType) => state.getServerList.selectedServer,
-  );
+  const { serverId, serverName } = useSelector((state: RootStateType) => ({
+    serverId: state.getServerList.selectedServerId,
+    serverName: state.getServerList.selectedServerName,
+  }));
   const accessTokenPlain = parseToken(accessToken);
   const [userName, userTag] = accessTokenPlain.nickname.split('#');
-  const tmpString: string = 'This is nav detail';
 
   useEffect(() => {
     console.log(chatRoomList);
   }, [chatRoomList]);
   useEffect(() => {
     const asyncGetChatListWrapper = async () => {
-      if (accessToken && selectedServer !== -1) {
+      if (accessToken && serverId !== -1) {
         const response = await getChatRoomList({
           token: accessToken,
-          serverId: selectedServer,
+          serverId,
         });
         setChatRoomList(response);
       }
     };
     asyncGetChatListWrapper().then(() => {});
-  }, [selectedServer]);
+  }, [serverId, accessToken]);
   return (
     <DetailNav>
-      <div
+      <ServerNameDiv>
+        <DefaultBoldP>{serverName}</DefaultBoldP>
+      </ServerNameDiv>
+      <hr
         style={{
-          height: '100%',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
+          height: '0.2rem',
+          width: '100 % ',
+          background: '#3D3D40',
+          margin: '0 0 1rem 0',
+          border: '0',
         }}
-      >
+      />
+      <ChatListNav>
         {chatRoomList ? (
           chatRoomList.map((chatRoom: any) => (
             <div key={chatRoom.id} style={{ margin: '0.4rem 0' }}>
@@ -94,7 +112,8 @@ export default function NavDetail() {
         ) : (
           <div />
         )}
-      </div>
+      </ChatListNav>
+      ;
       <UserProfileWrapper>
         <UserProfileContainer>
           <ProfilePicture src={UserDefaultProfile} alt="profile" />
@@ -104,6 +123,7 @@ export default function NavDetail() {
           </DefaultPCustom>
         </UserProfileContainer>
       </UserProfileWrapper>
+      ;
     </DetailNav>
   );
 }

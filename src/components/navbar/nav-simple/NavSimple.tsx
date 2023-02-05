@@ -1,12 +1,14 @@
-import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
-import { asyncGetServerList } from '../../../store/reducers/getServerReducer';
+import {
+  asyncGetServerList,
+  select,
+} from '../../../store/reducers/getServerReducer';
 import HomeIcon from '../../../assets/images/home.svg';
 import DefaultServerIcon from '../../../assets/images/default-server.svg';
 import { MAIN_COLOR_BASE } from '../../../assets/colors';
 import store, { RootStateType } from '../../../store/configureStore';
-import { getChatRoomList } from '../../../services/snackchat-api/getChatRoomList';
 
 const SNACKCHAT_API_URL = process.env.REACT_APP_SNACKCHAT_API_URL;
 const SimpleNav = styled.nav`
@@ -51,20 +53,25 @@ const ServerProfileDiv = styled.div`
 
   &:hover {
     cursor: pointer;
+    transform: scale(1.1);
   }
 `;
 
-const ServerProfile = ({
+const ServerProfileList = ({
   serverList,
   accessToken,
+  onClick,
 }: {
   serverList: Array<any>;
   accessToken: string | null;
+  onClick: any;
 }) => (
   <>
     {serverList.map((serverInfo: any) => (
       <div key={serverInfo.id} style={{ margin: '0.4rem 0' }}>
-        <ServerProfileDiv>
+        <ServerProfileDiv
+          onClick={() => onClick(serverInfo.server_name, serverInfo.id)}
+        >
           <img
             alt="server-img"
             src={`${SNACKCHAT_API_URL}${serverInfo.server_profile}`}
@@ -79,6 +86,7 @@ const ServerProfile = ({
 );
 
 export default function NavSimple() {
+  const dispatch = useDispatch();
   const accessToken = useSelector(
     (state: RootStateType) => state.getToken.accessToken,
   );
@@ -86,13 +94,13 @@ export default function NavSimple() {
     (state: RootStateType) => state.getServerList.serverList,
   );
 
-  const selectedServer = useSelector(
-    (state: RootStateType) => state.getServerList.selectedServer,
+  const selectedServerId = useSelector(
+    (state: RootStateType) => state.getServerList.selectedServerId,
   );
 
   useEffect(() => {
-    console.log(selectedServer);
-  }, [selectedServer]);
+    console.log(selectedServerId);
+  }, [selectedServerId]);
 
   useEffect(() => {
     const asyncGetServerListWrapper = async () => {
@@ -110,7 +118,13 @@ export default function NavSimple() {
       </ServerProfileDiv>
       <Divider />
       {serverList ? (
-        <ServerProfile serverList={serverList} accessToken={accessToken} />
+        <ServerProfileList
+          serverList={serverList}
+          accessToken={accessToken}
+          onClick={(serverName: string, serverId: number) => {
+            dispatch(select({ serverName, serverId }));
+          }}
+        />
       ) : (
         <div />
       )}
