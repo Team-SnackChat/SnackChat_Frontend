@@ -74,9 +74,6 @@ export default function NavDetail() {
   const [userName, userTag] = accessTokenPlain.nickname.split('#');
 
   useEffect(() => {
-    console.log(chatRoomList);
-  }, [chatRoomList]);
-  useEffect(() => {
     const asyncGetChatListWrapper = async () => {
       if (accessToken && serverId !== -1) {
         const response = await getChatRoomList({

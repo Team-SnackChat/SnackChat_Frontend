@@ -8,7 +8,7 @@ const initialState = {
   status: 'Default',
 };
 
-interface getServerResponse {
+export interface getServerResponse {
   chatRoom: Array<any>;
   id: number;
   is_open: boolean;
