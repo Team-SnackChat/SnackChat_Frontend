@@ -1,10 +1,16 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { postAuthorizationCode } from '../../services/snackchat-api/getToken';
+import {
+  parseToken,
+  postAuthorizationCode,
+} from '../../services/snackchat-api/getToken';
 
 const initialState = {
   refreshToken: null,
   accessToken: null,
   status: 'Default',
+  parseToken: {
+    user_id: -1,
+  },
 };
 
 const asyncGetToken = createAsyncThunk(
@@ -28,6 +34,7 @@ const getTokenSlice = createSlice({
     builder.addCase(asyncGetToken.fulfilled, (state, action) => {
       state.refreshToken = action.payload.refresh;
       state.accessToken = action.payload.access;
+      state.parseToken = parseToken(action.payload.access);
       state.status = 'Complete';
     });
     builder.addCase(asyncGetToken.rejected, (state) => {

@@ -33,6 +33,9 @@ const getServerListSlice = createSlice({
       state.selectedServerName = action.payload.serverName;
       state.selectedServerId = action.payload.serverId;
     },
+    updateServerList: (state, action) => {
+      state.serverList = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(asyncGetServerList.pending, (state) => {
@@ -54,5 +57,5 @@ const getServerListSlice = createSlice({
 });
 
 export default getServerListSlice;
-export const { select } = getServerListSlice.actions;
+export const { select, updateServerList } = getServerListSlice.actions;
 export { asyncGetServerList };

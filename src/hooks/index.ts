@@ -7,8 +7,6 @@ export const useEditableDiv = (initial: HTMLDivElement | null) => {
   const onInput = (event: ChangeEvent<HTMLDivElement>) => {
     _setContent(event.target);
     $contentEditable.current = event.target;
-    // console.dir(event.target);
-    // console.log(event.target.innerText);
   };
 
   const setContent = (newContent: HTMLDivElement | null) => {

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { DefaultP, DefaultPCustom, DefaultBoldP } from '../../../assets/styles';
 import { MAIN_COLOR_BASE, MAIN_COLOR_DARK } from '../../../assets/colors';
@@ -7,6 +7,7 @@ import { RootStateType } from '../../../store/configureStore';
 import { parseToken } from '../../../services/snackchat-api/getToken';
 import UserDefaultProfile from '../../../assets/images/user_default_profile.svg';
 import { getChatRoomList } from '../../../services/snackchat-api/getChatRoomList';
+import { selectChatRoom } from '../../../store/reducers/updateChatRoom';
 
 const DetailNav = styled.nav`
   background-color: ${MAIN_COLOR_DARK};
@@ -61,8 +62,13 @@ const UserName = styled(DefaultP)`
   font-weight: bold;
 `;
 
+const ChatRoomDiv = styled.div`
+  margin: 0.4rem 0;
+`;
+
 export default function NavDetail() {
   const [chatRoomList, setChatRoomList] = useState<Array<any>>([]);
+  const dispatch = useDispatch();
   const accessToken = useSelector(
     (state: RootStateType) => state.getToken.accessToken,
   );
@@ -81,6 +87,9 @@ export default function NavDetail() {
           serverId,
         });
         setChatRoomList(response);
+        if (response.length > 0) {
+          dispatch(selectChatRoom(response[0].id));
+        }
       }
     };
     asyncGetChatListWrapper().then(() => {});
@@ -102,15 +111,20 @@ export default function NavDetail() {
       <ChatListNav>
         {chatRoomList ? (
           chatRoomList.map((chatRoom: any) => (
-            <div key={chatRoom.id} style={{ margin: '0.4rem 0' }}>
+            <ChatRoomDiv
+              key={chatRoom.id}
+              style={{ margin: '0.4rem 0' }}
+              onClick={() => {
+                dispatch(selectChatRoom(chatRoom.id));
+              }}
+            >
               <DefaultP>{chatRoom.chatroom_name}</DefaultP>
-            </div>
+            </ChatRoomDiv>
           ))
         ) : (
           <div />
         )}
       </ChatListNav>
-      ;
       <UserProfileWrapper>
         <UserProfileContainer>
           <ProfilePicture src={UserDefaultProfile} alt="profile" />
@@ -120,7 +134,6 @@ export default function NavDetail() {
           </DefaultPCustom>
         </UserProfileContainer>
       </UserProfileWrapper>
-      ;
     </DetailNav>
   );
 }

@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, DragEvent } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Tooltip } from '@mui/material';
 import styled from 'styled-components';
@@ -6,6 +6,7 @@ import {
   asyncGetServerList,
   select,
   getServerResponse,
+  updateServerList,
 } from '../../../store/reducers/getServerReducer';
 import HomeIcon from '../../../assets/images/home.svg';
 import DefaultServerIcon from '../../../assets/images/default-server.svg';
@@ -53,7 +54,9 @@ const ServerProfileDiv = styled.div<ServerProfileDivProps>`
   width: 3rem;
   height: 3rem;
   border: ${(props) =>
-    props.serverId === props.selectedServerId ? '0.2rem solid white' : 'none'};
+    props.serverId === props.selectedServerId
+      ? '0.2rem solid #e9a854'
+      : 'none'};
   border-radius: 30%;
   background-color: #36383f;
   display: flex;
@@ -66,45 +69,77 @@ const ServerProfileDiv = styled.div<ServerProfileDivProps>`
   }
 `;
 
-const ServerProfileList = ({
-  serverList,
-  selectedServerId,
-  onClick,
-}: {
-  serverList: Array<getServerResponse>;
-  selectedServerId: number;
-  onClick: any;
-}) => (
-  <>
-    {serverList.map((serverInfo: getServerResponse) => (
-      <div key={serverInfo.id} style={{ margin: '0.4rem 0' }}>
-        <Tooltip title={serverInfo.server_name} placement="right" arrow>
-          <ServerProfileDiv
-            serverId={serverInfo.id}
-            selectedServerId={selectedServerId}
-            onClick={() => onClick(serverInfo.server_name, serverInfo.id)}
-          >
-            <img
-              alt="server-img"
-              src={`${SNACKCHAT_API_URL}${serverInfo.server_profile}`}
-              onError={(event) => {
-                event.currentTarget.src = DefaultServerIcon;
-              }}
-            />
-          </ServerProfileDiv>
-        </Tooltip>
-      </div>
-    ))}
-  </>
-);
-
-export default function NavSimple() {
+const ServerProfileList = () => {
   const dispatch = useDispatch();
-  const accessToken = useSelector(
-    (state: RootStateType) => state.getToken.accessToken,
-  );
   const serverList = useSelector(
     (state: RootStateType) => state.getServerList.serverList,
+  );
+  const selectedServerId = useSelector(
+    (state: RootStateType) => state.getServerList.selectedServerId,
+  );
+
+  const onDragStart = (e: DragEvent<HTMLDivElement>, index: number) => {
+    e.dataTransfer.setData('index', index.toString());
+  };
+
+  const onDragOver = (e: DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+  };
+
+  const onDrop = (e: DragEvent<HTMLDivElement>, newIndex: number) => {
+    const oldIndex = e.dataTransfer.getData('index');
+    const newServerProfiles = [...serverList];
+    const [removedServerProfile] = newServerProfiles.splice(
+      parseInt(oldIndex, 10),
+      1,
+    );
+    newServerProfiles.splice(newIndex, 0, removedServerProfile);
+    dispatch(updateServerList(newServerProfiles));
+  };
+
+  return serverList ? (
+    <>
+      {serverList.map((serverInfo: getServerResponse, index) => (
+        <div key={serverInfo.id} style={{ margin: '0.4rem 0' }}>
+          <Tooltip title={serverInfo.server_name} placement="right" arrow>
+            <ServerProfileDiv
+              serverId={serverInfo.id}
+              selectedServerId={selectedServerId}
+              onClick={() => {
+                dispatch(
+                  select({
+                    serverName: serverInfo.server_name,
+                    serverId: serverInfo.id,
+                  }),
+                );
+              }}
+              onDragStart={(e: DragEvent<HTMLDivElement>) =>
+                onDragStart(e, index)
+              }
+              onDragOver={onDragOver}
+              onDrop={(e: DragEvent<HTMLDivElement>) => onDrop(e, index)}
+              draggable
+            >
+              <img
+                alt="server-img"
+                src={`${SNACKCHAT_API_URL}${serverInfo.server_profile}`}
+                onError={(event) => {
+                  event.currentTarget.src = DefaultServerIcon;
+                }}
+              />
+            </ServerProfileDiv>
+          </Tooltip>
+        </div>
+      ))}
+    </>
+  ) : (
+    <div />
+  );
+};
+
+export default function NavSimple() {
+  const accessToken = useSelector(
+    (state: RootStateType) => state.getToken.accessToken,
   );
   const selectedServerId = useSelector(
     (state: RootStateType) => state.getServerList.selectedServerId,
@@ -121,21 +156,11 @@ export default function NavSimple() {
 
   return (
     <SimpleNav>
-      <ServerProfileDiv serverId={-1} selectedServerId={selectedServerId}>
+      <ServerProfileDiv serverId={-2} selectedServerId={selectedServerId}>
         <img alt="home-button" src={HomeIcon} width="100%" height="auto" />
       </ServerProfileDiv>
       <Divider />
-      {serverList ? (
-        <ServerProfileList
-          serverList={serverList}
-          selectedServerId={selectedServerId}
-          onClick={(serverName: string, serverId: number) => {
-            dispatch(select({ serverName, serverId }));
-          }}
-        />
-      ) : (
-        <div />
-      )}
+      <ServerProfileList />
     </SimpleNav>
   );
 }

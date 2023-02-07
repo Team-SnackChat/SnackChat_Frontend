@@ -6,13 +6,18 @@ import {
   TEXT_FIELD_DISABLED_COLOR,
 } from '../../assets/colors';
 
+interface CustomInputDivProps {
+  backgroundColor: string;
+}
+
 interface InputDivProps {
   backgroundColor: string;
+  messageSendCallback: any;
 }
 
 const CustomInputDiv = styled.div`
   height: auto;
-  background-color: ${(props: InputDivProps) =>
+  background-color: ${(props: CustomInputDivProps) =>
     props.backgroundColor || TEXT_FIELD_DISABLED_COLOR};
   padding: 0.6rem 1rem;
   border: none;
@@ -33,7 +38,10 @@ const CustomInputDiv = styled.div`
   }
 `;
 
-export default function InputDiv({ backgroundColor }: InputDivProps) {
+export default function InputDiv({
+  backgroundColor,
+  messageSendCallback,
+}: InputDivProps) {
   const { content, onInput, $contentEditable, resetContent } =
     useEditableDiv(null);
 
@@ -54,7 +62,7 @@ export default function InputDiv({ backgroundColor }: InputDivProps) {
   const handleCustomDivKeyPress = (event: KeyboardEvent<HTMLDivElement>) => {
     if (event.key === 'Enter' && !event.shiftKey) {
       if (content?.innerText) {
-        console.log('---------');
+        messageSendCallback(content.innerText);
       }
       event.preventDefault();
       resetContent();
