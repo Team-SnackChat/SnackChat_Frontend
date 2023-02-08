@@ -2,12 +2,16 @@ import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { DefaultP, DefaultPCustom, DefaultBoldP } from '../../../assets/styles';
-import { MAIN_COLOR_BASE, MAIN_COLOR_DARK } from '../../../assets/colors';
+import {
+  MAIN_COLOR_BASE,
+  MAIN_COLOR_DARK,
+  COMMENT_DARK_COLOR,
+} from '../../../assets/colors';
 import { RootStateType } from '../../../store/configureStore';
 import { parseToken } from '../../../services/snackchat-api/getToken';
 import UserDefaultProfile from '../../../assets/images/user_default_profile.svg';
 import { getChatRoomList } from '../../../services/snackchat-api/getChatRoomList';
-import { selectChatRoom } from '../../../store/reducers/updateChatRoom';
+import { selectChatRoom } from '../../../store/reducers/updateChatRoomReducer';
 
 const DetailNav = styled.nav`
   background-color: ${MAIN_COLOR_DARK};
@@ -88,7 +92,12 @@ export default function NavDetail() {
         });
         setChatRoomList(response);
         if (response.length > 0) {
-          dispatch(selectChatRoom(response[0].id));
+          dispatch(
+            selectChatRoom({
+              chatRoomId: response[0].id,
+              chatRoomName: response[0].chatroom_name,
+            }),
+          );
         }
       }
     };
@@ -115,7 +124,12 @@ export default function NavDetail() {
               key={chatRoom.id}
               style={{ margin: '0.4rem 0' }}
               onClick={() => {
-                dispatch(selectChatRoom(chatRoom.id));
+                dispatch(
+                  selectChatRoom({
+                    chatRoomId: chatRoom.id,
+                    chatRoomName: chatRoom.chatroom_name,
+                  }),
+                );
               }}
             >
               <DefaultP>{chatRoom.chatroom_name}</DefaultP>
@@ -129,7 +143,7 @@ export default function NavDetail() {
         <UserProfileContainer>
           <ProfilePicture src={UserDefaultProfile} alt="profile" />
           <UserName>{userName}</UserName>
-          <DefaultPCustom fontColor="#d3d3d3" fontSize={0.5}>
+          <DefaultPCustom fontColor={COMMENT_DARK_COLOR} fontSize={0.5}>
             #{userTag}
           </DefaultPCustom>
         </UserProfileContainer>

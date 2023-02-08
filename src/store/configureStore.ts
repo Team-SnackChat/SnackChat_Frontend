@@ -1,7 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit';
 import getTokenSlice from './reducers/getTokenReducer';
 import getServerListSlice from './reducers/getServerReducer';
-import updateChatRoomSlice from './reducers/updateChatRoom';
+import updateChatRoomSlice from './reducers/updateChatRoomReducer';
 
 const store = configureStore({
   reducer: {

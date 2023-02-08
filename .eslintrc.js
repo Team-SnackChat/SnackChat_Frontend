@@ -9,6 +9,7 @@ module.exports = {
     'plugin:prettier/recommended',
     'airbnb',
     'react-app',
+    'prettier',
   ],
   parserOptions: {
     ecmaFeatures: { jsx: true },
