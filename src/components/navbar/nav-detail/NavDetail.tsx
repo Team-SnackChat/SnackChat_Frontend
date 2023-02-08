@@ -6,6 +6,7 @@ import {
   MAIN_COLOR_BASE,
   MAIN_COLOR_DARK,
   COMMENT_DARK_COLOR,
+  COMMENT_LIGHT_COLOR,
 } from '../../../assets/colors';
 import { RootStateType } from '../../../store/configureStore';
 import { parseToken } from '../../../services/snackchat-api/getToken';
@@ -32,7 +33,14 @@ const ChatListNav = styled.nav`
   height: 100%;
   display: flex;
   flex-direction: column;
-  align-items: center;
+`;
+
+const Divider = styled.hr`
+  height: 0.2rem;
+  width: 100%;
+  background-color: #3d3d40;
+  margin: 0 0 1rem 0;
+  border: 0;
 `;
 
 const UserProfileWrapper = styled.div`
@@ -67,7 +75,9 @@ const UserName = styled(DefaultP)`
 `;
 
 const ChatRoomDiv = styled.div`
-  margin: 0.4rem 0;
+  margin: 0.4rem 1rem;
+  display: flex;
+  align-items: center;
 `;
 
 export default function NavDetail() {
@@ -108,21 +118,12 @@ export default function NavDetail() {
       <ServerNameDiv>
         <DefaultBoldP>{serverName}</DefaultBoldP>
       </ServerNameDiv>
-      <hr
-        style={{
-          height: '0.2rem',
-          width: '100 % ',
-          background: '#3D3D40',
-          margin: '0 0 1rem 0',
-          border: '0',
-        }}
-      />
+      <Divider />
       <ChatListNav>
         {chatRoomList ? (
           chatRoomList.map((chatRoom: any) => (
             <ChatRoomDiv
               key={chatRoom.id}
-              style={{ margin: '0.4rem 0' }}
               onClick={() => {
                 dispatch(
                   selectChatRoom({
@@ -132,7 +133,9 @@ export default function NavDetail() {
                 );
               }}
             >
-              <DefaultP>{chatRoom.chatroom_name}</DefaultP>
+              <DefaultPCustom fontColor={COMMENT_LIGHT_COLOR} fontSize={1}>
+                🍪 {chatRoom.chatroom_name}
+              </DefaultPCustom>
             </ChatRoomDiv>
           ))
         ) : (

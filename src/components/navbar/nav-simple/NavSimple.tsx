@@ -10,7 +10,7 @@ import {
 } from '../../../store/reducers/getServerReducer';
 import HomeIcon from '../../../assets/images/home.svg';
 import DefaultServerIcon from '../../../assets/images/default-server.svg';
-import { MAIN_COLOR_BASE } from '../../../assets/colors';
+import { MAIN_COLOR_BASE, THEME_COLOR } from '../../../assets/colors';
 import store, { RootStateType } from '../../../store/configureStore';
 
 const SNACKCHAT_API_URL = process.env.REACT_APP_SNACKCHAT_API_URL;
@@ -55,7 +55,7 @@ const ServerProfileDiv = styled.div<ServerProfileDivProps>`
   height: 3rem;
   border: ${(props) =>
     props.serverId === props.selectedServerId
-      ? '0.2rem solid #e9a854'
+      ? `0.2rem solid ${THEME_COLOR}`
       : 'none'};
   border-radius: 30%;
   background-color: #36383f;

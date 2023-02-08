@@ -13,7 +13,7 @@ const HomeDiv = styled.div`
   height: 100vh;
   background-color: ${MAIN_COLOR_BASE};
   display: flex;
-  flex-direction: row; ;
+  flex-direction: row;
 `;
 
 export default function Home() {
@@ -32,7 +32,7 @@ export default function Home() {
     <HomeDiv>
       <Navbar />
       <HomeContentsText />
-      <SideInfo />
+      {/*<SideInfo />*/}
     </HomeDiv>
   );
 }
