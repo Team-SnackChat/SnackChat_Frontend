@@ -163,11 +163,16 @@ export default function HomeContentsText() {
   useEffect(() => {
     if (webSocket) {
       webSocket.onmessage = (e) => {
-        setArrivalChat(JSON.parse(e.data));
-        setDisplayOption('block');
+        const parsingData = JSON.parse(e.data);
+        setArrivalChat(parsingData);
+        if (parseToken && parsingData.user === parseToken.email) {
+          resetScrollPositionToBottom();
+        } else {
+          setDisplayOption('block');
+        }
       };
     }
-  }, [webSocket]);
+  }, [webSocket, parseToken, resetScrollPositionToBottom]);
 
   useEffect(() => {
     const asyncGetChatRoomLogListWrapper = async () => {

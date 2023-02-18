@@ -35,9 +35,13 @@ export interface TokenResponseType {
 }
 
 export interface TokenType {
-  email: string;
-  nickname: string;
   user_id: number;
+  email: string;
+  exp: number;
+  iat: number;
+  jti: string;
+  nickname: string;
+  token_type: string;
 }
 
 export const parseToken = (token: string | null): TokenType => {
@@ -58,5 +62,13 @@ export const parseToken = (token: string | null): TokenType => {
     );
     return JSON.parse(payloadDecode);
   }
-  return { email: '', nickname: '', user_id: -1 };
+  return {
+    user_id: -1,
+    email: 'none',
+    exp: 0,
+    iat: 0,
+    jti: '',
+    nickname: 'none',
+    token_type: 'none',
+  };
 };

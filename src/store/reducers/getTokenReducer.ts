@@ -10,6 +10,12 @@ const initialState = {
   status: 'Default',
   parseToken: {
     user_id: -1,
+    email: 'none',
+    exp: 0,
+    iat: 0,
+    jti: '',
+    nickname: 'none',
+    token_type: 'none',
   },
 };
 
