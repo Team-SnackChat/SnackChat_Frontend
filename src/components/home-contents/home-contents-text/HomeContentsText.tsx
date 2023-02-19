@@ -164,8 +164,9 @@ export default function HomeContentsText() {
     if (webSocket) {
       webSocket.onmessage = (e) => {
         const parsingData = JSON.parse(e.data);
+        console.log(parsingData);
         setArrivalChat(parsingData);
-        if (parseToken && parsingData.user === parseToken.email) {
+        if (parseToken && parsingData.email === parseToken.email) {
           resetScrollPositionToBottom();
         } else {
           setDisplayOption('block');
