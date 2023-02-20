@@ -5,9 +5,10 @@
       "dom",
       "dom.iterable",
       "esnext",
-      "es6",
+      "es6"
     ],
     "allowJs": true,
+    "checkJs": false,
     "baseUrl": "./src",
     "noImplicitAny": true,
     "noImplicitThis": true,
@@ -23,9 +24,17 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "outDir": "dist"
   },
   "include": [
     "src"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "fixtures",
+    "src/**/*.test.tsx",
+    "src/**/*.test.ts"
   ]
 }
