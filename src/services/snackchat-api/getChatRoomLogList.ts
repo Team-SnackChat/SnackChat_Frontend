@@ -3,6 +3,20 @@ import axios from 'axios';
 const SNACKCHAT_API_URL = process.env.REACT_APP_SNACKCHAT_API_URL;
 const SNACKCHAT_TEST_URL = process.env.REACT_APP_COOKIE_TEST_URL;
 
+export interface ChatLogResponseType {
+  message: string;
+  sender: string;
+  chatroom: number;
+  images: string;
+  is_read: boolean;
+  cur_time: string;
+  date: string;
+  email: string;
+  profile_image: string;
+  created_at: string;
+  id: number;
+}
+
 interface GetChatRoomLogListProps {
   token: string;
   chatRoomId: number;

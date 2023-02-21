@@ -13,14 +13,16 @@ import {
 import { DefaultBoldP, DefaultPCustom } from '../../../assets/styles';
 import UserDefaultProfile from '../../../assets/images/user_default_profile.svg';
 import { InputDiv } from '../../input-div';
-import { getChatRoomLogList } from '../../../services/snackchat-api/getChatRoomLogList';
+import {
+  getChatRoomLogList,
+  ChatLogResponseType,
+} from '../../../services/snackchat-api/getChatRoomLogList';
 
 const SNACKCHAT_API_URL = process.env.REACT_APP_SNACKCHAT_API_URL;
 
 const ContentsTextDiv = styled.div`
   background-color: ${MAIN_COLOR_BASE};
   width: 100%;
-  //padding: 0.5rem 1rem;
   margin: 1.5rem 0;
   flex-shrink: 1;
   display: flex;
@@ -118,8 +120,12 @@ const AlertNewMessageDiv = styled.div<AlertNewMessageDivProps>`
 export default function HomeContentsText() {
   const [webSocket, setWebSocket] = useState<WebSocket | null>(null);
   const [displayOption, setDisplayOption] = useState<string>('none');
-  const [chatLogList, setChatLogList] = useState<Array<any>>([]);
-  const [arrivalChat, setArrivalChat] = useState<Object>({});
+  const [chatLogList, setChatLogList] = useState<Array<ChatLogResponseType>>(
+    [],
+  );
+  const [arrivalChat, setArrivalChat] = useState<ChatLogResponseType | null>(
+    null,
+  );
   const [chatSectionHeight, setChatSectionHeight] = useState<number>(0);
   const scrollDivRef = useRef<HTMLDivElement | null>(null);
   const chatRoomId = useSelector(
@@ -157,14 +163,15 @@ export default function HomeContentsText() {
   }, []);
 
   useEffect(() => {
-    arrivalChat && setChatLogList((prev) => [...prev, arrivalChat]);
+    if (arrivalChat !== null) {
+      setChatLogList((prev) => [...prev, arrivalChat]);
+    }
   }, [arrivalChat]);
 
   useEffect(() => {
     if (webSocket) {
       webSocket.onmessage = (e) => {
         const parsingData = JSON.parse(e.data);
-        console.log(parsingData);
         setArrivalChat(parsingData);
         if (parseToken && parsingData.email === parseToken.email) {
           resetScrollPositionToBottom();
@@ -182,7 +189,6 @@ export default function HomeContentsText() {
           token: accessToken,
           chatRoomId,
         });
-        console.dir(response);
         setChatLogList(response);
       }
     };
@@ -227,7 +233,7 @@ export default function HomeContentsText() {
                     <ChatBox>
                       <img
                         alt="user-profile"
-                        src={`${SNACKCHAT_API_URL}${chatLog.user_profile}`}
+                        src={`${SNACKCHAT_API_URL}${chatLog.profile_image}`}
                         style={{ width: '2rem', height: '2rem' }}
                         onError={(event) => {
                           event.currentTarget.src = UserDefaultProfile;
@@ -245,13 +251,17 @@ export default function HomeContentsText() {
                             {`${chatLog.date} ${chatLog.cur_time}`}
                           </DefaultPCustom>
                         </ChatLogHeader>
-                        <DefaultPCustom
-                          fontColor={COMMENT_LIGHT_COLOR}
-                          fontSize={1}
-                          style={{ marginRight: '1rem' }}
-                        >
-                          {chatLog.message}
-                        </DefaultPCustom>
+                        {chatLog.message.split('\n').map((msg, idx) => (
+                          <div key={chatLog.id + idx.toString()}>
+                            <DefaultPCustom
+                              fontColor={COMMENT_LIGHT_COLOR}
+                              fontSize={1}
+                              style={{ marginRight: '1rem' }}
+                            >
+                              {msg}
+                            </DefaultPCustom>
+                          </div>
+                        ))}
                       </ChatLogContainer>
                     </ChatBox>
                   </div>
@@ -271,9 +281,9 @@ export default function HomeContentsText() {
               ) {
                 webSocket.send(
                   JSON.stringify({
-                    room_id: chatRoomId,
+                    chatroom: chatRoomId,
                     message: msg,
-                    sender_id: parseToken.user_id,
+                    sender: parseToken.user_id,
                     images: '',
                   }),
                 );
