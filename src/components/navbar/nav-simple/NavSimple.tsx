@@ -1,4 +1,4 @@
-import { useEffect, DragEvent } from 'react';
+import { useEffect, DragEvent, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Tooltip } from '@mui/material';
 import styled from 'styled-components';
@@ -8,7 +8,9 @@ import {
   getServerResponse,
   updateServerList,
 } from '../../../store/reducers/getServerReducer';
+import { CreateServerModal } from '../../modals/create-server-modal';
 import HomeIcon from '../../../assets/images/home.svg';
+import { ReactComponent as ServerAdderIcon } from '../../../assets/images/server-adder.svg';
 import DefaultServerIcon from '../../../assets/images/default-server.svg';
 import { MAIN_COLOR_BASE, THEME_COLOR } from '../../../assets/colors';
 import store, { RootStateType } from '../../../store/configureStore';
@@ -137,7 +139,23 @@ const ServerProfileList = () => {
   );
 };
 
+const ServerAdder = ({ onClick }: { onClick: () => void }) => (
+  <div style={{ marginTop: '0.5rem' }}>
+    <Tooltip title="서버 추가하기" placement="right" arrow>
+      <ServerProfileDiv selectedServerId={-2} serverId={-3}>
+        <ServerAdderIcon
+          onClick={onClick}
+          width="80%"
+          height="auto"
+          fill="#E9A854"
+        />
+      </ServerProfileDiv>
+    </Tooltip>
+  </div>
+);
+
 export default function NavSimple() {
+  const [createModalOpen, setCreateModalOpen] = useState<boolean>(false);
   const accessToken = useSelector(
     (state: RootStateType) => state.getToken.accessToken,
   );
@@ -161,6 +179,13 @@ export default function NavSimple() {
       </ServerProfileDiv>
       <Divider />
       <ServerProfileList />
+      <ServerAdder onClick={() => setCreateModalOpen(true)} />
+      <CreateServerModal
+        isOpen={createModalOpen}
+        handleClose={() => {
+          setCreateModalOpen(false);
+        }}
+      />
     </SimpleNav>
   );
 }

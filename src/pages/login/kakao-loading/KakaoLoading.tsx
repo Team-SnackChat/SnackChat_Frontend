@@ -13,18 +13,6 @@ const KakaoLoadingDiv = styled.div`
   height: 100vh;
   background-color: ${MAIN_COLOR_BASE};
 `;
-// const COOKIE_TEST_URL = process.env.REACT_APP_COOKIE_TEST_URL;
-// const testInstance = axios.create({
-//   baseURL: 'https://carrotww.shop',
-//   withCredentials: true,
-// });
-
-// const handleTest = async (code: string) => {
-//   if (COOKIE_TEST_URL) {
-//     const response = await testInstance.get('/users/test/');
-//     console.dir(response);
-//   }
-// };
 
 export default function KakaoLoading() {
   const navigate = useNavigate();

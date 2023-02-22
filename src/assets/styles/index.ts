@@ -28,3 +28,11 @@ export const DefaultBoldP = styled.p`
   color: white;
   margin: 0;
 `;
+
+export const DefaultBoldPCustom = styled.p<DefaultFontProps>`
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: ${(props) => props.fontSize || 1}rem;
+  font-weight: bold;
+  color: ${(props) => props.fontColor || 'white'};
+  margin: 0;
+`;

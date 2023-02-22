@@ -1,7 +1,12 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
-import { DefaultP, DefaultPCustom, DefaultBoldP } from '../../../assets/styles';
+import {
+  DefaultP,
+  DefaultPCustom,
+  DefaultBoldP,
+  DefaultBoldPCustom,
+} from '../../../assets/styles';
 import {
   MAIN_COLOR_BASE,
   MAIN_COLOR_DARK,
@@ -75,9 +80,16 @@ const UserName = styled(DefaultP)`
 `;
 
 const ChatRoomDiv = styled.div`
-  margin: 0.4rem 1rem;
+  margin: 0.5rem;
+  border-radius: 1rem;
+  padding: 0.4rem 0.5rem;
   display: flex;
   align-items: center;
+
+  &:hover {
+    cursor: pointer;
+    background-color: #393940;
+  }
 `;
 
 export default function NavDetail() {
@@ -120,6 +132,13 @@ export default function NavDetail() {
       </ServerNameDiv>
       <Divider />
       <ChatListNav>
+        <DefaultBoldPCustom
+          fontColor={COMMENT_LIGHT_COLOR}
+          fontSize={0.8}
+          style={{ margin: '0 1rem' }}
+        >
+          채팅채널
+        </DefaultBoldPCustom>
         {chatRoomList ? (
           chatRoomList.map((chatRoom: any) => (
             <ChatRoomDiv
