@@ -1,10 +1,12 @@
-import { ChangeEvent, useState } from 'react';
+import { ChangeEvent, useRef, useState } from 'react';
 import { TextField, Tooltip } from '@mui/material';
 import styled from 'styled-components';
+import { styled as muiStyled } from '@mui/material/styles';
 import {
   MAIN_COLOR_BASE,
   COMMENT_DARK_COLOR,
   THEME_COLOR,
+  TEXT_FIELD_DISABLED_COLOR,
 } from '../../../assets/colors';
 import { ReactComponent as ServerImageUploadIcon } from '../../../assets/images/server-image-upload.svg';
 import { DefaultBoldPCustom, DefaultPCustom } from '../../../assets/styles';
@@ -31,6 +33,23 @@ const CSMServerNameDiv = styled.div`
   margin-top: 1rem;
 `;
 
+interface CSMSelectedServerImageDivProps {
+  backgroundImage: string;
+}
+
+const CSMSelectedServerImageDiv = styled.div<CSMSelectedServerImageDivProps>`
+  width: 5rem;
+  height: 5rem;
+  margin-top: 1rem;
+  border: 0.2rem solid ${THEME_COLOR};
+  border-radius: 50%;
+  background-image: ${(props) =>
+    props.backgroundImage ? `url(${props.backgroundImage})` : 'none'};
+  background-size: cover;
+  background-position: center;
+  cursor: pointer;
+`;
+
 const CSMServerImageDiv = styled.div`
   width: 5rem;
   height: 5rem;
@@ -41,6 +60,25 @@ const CSMServerImageDiv = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+
+  &:hover {
+    animation: pulse 0.8s ease-in-out forwards;
+  }
+
+  @keyframes pulse {
+    0% {
+      transform: scale(1);
+    }
+    30% {
+      transform: scale(1.1);
+    }
+    60% {
+      transform: scale(1.1);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
 `;
 
 const CSMContentSection = styled.section`
@@ -57,26 +95,80 @@ const CSMSubmitDiv = styled.div`
   justify-content: end;
 `;
 
-const CSMSubmitButton = styled.button`
+const CSMServerNameTextField = muiStyled(TextField)`
+width: 100%;
+  height: 1.2rem;
+  margin: 0.5rem 0 0 0;
+
+  & input {
+    color: white;
+  }
+
+  & .MuiOutlinedInput-root {
+    & fieldset {
+      border-color: gray;
+    }
+
+    &:hover fieldset {
+      border-color: lightgray;
+    }
+
+    &.Mui-focused fieldset {
+      border-color: ${THEME_COLOR};
+    }
+  }
+`;
+
+interface CSMSubmitButtonProps {
+  isDisabled: boolean;
+}
+
+const CSMSubmitButton = styled.button<CSMSubmitButtonProps>`
   padding: 0.5rem 1rem;
-  background-color: ${THEME_COLOR};
+  background-color: ${(props) =>
+    props.isDisabled ? TEXT_FIELD_DISABLED_COLOR : THEME_COLOR};
   border-radius: 0.5rem;
-  cursor: pointer;
+  cursor: ${(props) => (props.isDisabled ? 'not-allowed' : 'pointer')};
 
   &:hover {
-    background-color: #c99249;
+    background-color: ${(props) =>
+      props.isDisabled ? TEXT_FIELD_DISABLED_COLOR : '#c99249'};
   }
 `;
 
 export default function CreateServerModal({ isOpen, handleClose }: ModalProps) {
   const [newServerName, setNewServerName] = useState<string>('');
+  const [selectedImage, setSelectedImage] = useState<Blob | MediaSource | null>(
+    null,
+  );
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+
   const handleServernameChange = (event: ChangeEvent<HTMLInputElement>) => {
     setNewServerName(event.target.value);
   };
 
+  const handleImageClick = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
+
+  const handleFileInputChange = (event: ChangeEvent<HTMLInputElement>) => {
+    if (event.target?.files) {
+      const newServerImg = event.target.files[0];
+      setSelectedImage(newServerImg);
+    }
+  };
+
+  const handleModalClose = () => {
+    setNewServerName('');
+    setSelectedImage(null);
+    handleClose();
+  };
+
   return (
     <div>
-      <SnackChatDefaultModal open={isOpen} onClose={handleClose}>
+      <SnackChatDefaultModal open={isOpen} onClose={handleModalClose}>
         <CSMDiv>
           <CSMContentSection>
             <CSMTitle>
@@ -91,41 +183,42 @@ export default function CreateServerModal({ isOpen, handleClose }: ModalProps) {
               나만의 서버를 만들어 SnackChat을 즐기세요!
             </DefaultPCustom>
             <Tooltip title="서버이미지 추가하기" placement="right" arrow>
-              <CSMServerImageDiv>
-                <ServerImageUploadIcon width="60%" />
-              </CSMServerImageDiv>
+              {selectedImage ? (
+                <CSMSelectedServerImageDiv
+                  backgroundImage={URL.createObjectURL(selectedImage)}
+                  onClick={handleImageClick}
+                />
+              ) : (
+                <CSMServerImageDiv onClick={handleImageClick}>
+                  <ServerImageUploadIcon width="60%" />
+                </CSMServerImageDiv>
+              )}
             </Tooltip>
+            <input
+              type="file"
+              accept=".png, .jpg, .svg, .jpeg"
+              ref={fileInputRef}
+              style={{ display: 'none' }}
+              onChange={handleFileInputChange}
+            />
             <CSMServerNameDiv>
               <DefaultBoldPCustom fontColor="white" fontSize={0.7}>
                 서버 이름
               </DefaultBoldPCustom>
-              <TextField
+              <CSMServerNameTextField
                 value={newServerName}
                 onChange={handleServernameChange}
                 id="server-name-input"
                 variant="outlined"
-                sx={{
-                  width: '100%',
-                  height: '1.2rem',
-                  margin: '0.5rem 0 0 0',
-                  input: { color: 'white' },
-                  '& .MuiOutlinedInput-root': {
-                    '& fieldset': {
-                      borderColor: 'gray',
-                    },
-                    '&:hover fieldset': {
-                      borderColor: 'lightgray',
-                    },
-                    '&.Mui-focused fieldset': {
-                      borderColor: `${THEME_COLOR}`,
-                    },
-                  },
-                }}
+                autoComplete="off"
               />
             </CSMServerNameDiv>
           </CSMContentSection>
           <CSMSubmitDiv>
-            <CSMSubmitButton>
+            <CSMSubmitButton
+              isDisabled={newServerName === ''}
+              onClick={() => console.log('hi')}
+            >
               <DefaultBoldPCustom fontColor="white" fontSize={1}>
                 만들기
               </DefaultBoldPCustom>
