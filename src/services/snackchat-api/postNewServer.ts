@@ -13,12 +13,20 @@ export const postNewServer = async (props: PostNewServerProps) => {
   try {
     console.log(props.serverProfile);
     console.log(typeof props.serverProfile);
+    let serverProfile;
+    const reader = new FileReader();
+    reader.readAsDataURL(props.serverProfile);
+    reader.onloadend = () => {
+      serverProfile = reader.result;
+    };
+    console.log(serverProfile);
+    console.log(typeof serverProfile);
     if (SNACKCHAT_API_URL) {
       const response = await axios.post(
         `${SNACKCHAT_API_URL}/chats/servers/create/`,
         {
           server_name: props.serverName,
-          server_profile: props.serverProfile,
+          server_profile: serverProfile,
         },
         {
           headers: { Authorization: `Bearer ${props.token}` },
