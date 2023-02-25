@@ -8,13 +8,13 @@ const initialState = {
   status: 'Default',
 };
 
-export interface getServerResponse {
+export interface getServerListResponseType {
   chatRoom: Array<any>;
   id: number;
   is_open: boolean;
   server_name: string;
   server_profile: string;
-  user: Array<any>;
+  user: Array<number>;
 }
 
 const asyncGetServerList = createAsyncThunk(
@@ -45,7 +45,7 @@ const getServerListSlice = createSlice({
       state.serverList = action.payload;
       state.status = 'Complete';
       if (state.serverList.length > 0) {
-        const firstServer: getServerResponse = state.serverList[0];
+        const firstServer: getServerListResponseType = state.serverList[0];
         state.selectedServerName = firstServer.server_name;
         state.selectedServerId = firstServer.id;
       }

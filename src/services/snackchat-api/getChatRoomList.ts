@@ -1,11 +1,14 @@
 import axios from 'axios';
-
-const SNACKCHAT_API_URL = process.env.REACT_APP_SNACKCHAT_API_URL;
-const SNACKCHAT_TEST_URL = process.env.REACT_APP_COOKIE_TEST_URL;
+import { SNACKCHAT_API_URL } from './constants';
 
 interface GetChatRoomListProps {
   token: string;
   serverId: number;
+}
+
+export interface GetChatRoomListResponseType {
+  id: number;
+  chatroom_name: string;
 }
 
 export const getChatRoomList = async (props: GetChatRoomListProps) => {

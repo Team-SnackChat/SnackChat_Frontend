@@ -1,96 +1,35 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import styled from 'styled-components';
 import {
-  DefaultP,
   DefaultPCustom,
   DefaultBoldP,
   DefaultBoldPCustom,
 } from '../../../assets/styles';
 import {
-  MAIN_COLOR_BASE,
-  MAIN_COLOR_DARK,
   COMMENT_DARK_COLOR,
   COMMENT_LIGHT_COLOR,
 } from '../../../assets/colors';
 import { RootStateType } from '../../../store/configureStore';
 import { parseToken } from '../../../services/snackchat-api/getToken';
 import UserDefaultProfile from '../../../assets/images/user_default_profile.svg';
-import { getChatRoomList } from '../../../services/snackchat-api/getChatRoomList';
+import {
+  getChatRoomList,
+  GetChatRoomListResponseType,
+} from '../../../services/snackchat-api/getChatRoomList';
 import { selectChatRoom } from '../../../store/reducers/updateChatRoomReducer';
-
-const DetailNav = styled.nav`
-  background-color: ${MAIN_COLOR_DARK};
-  width: 100%;
-  height: auto;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-`;
-
-const ServerNameDiv = styled.div`
-  margin: 1rem;
-  display: flex;
-  align-items: center;
-`;
-
-const ChatListNav = styled.nav`
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-`;
-
-const Divider = styled.hr`
-  height: 0.2rem;
-  width: 100%;
-  background-color: #3d3d40;
-  margin: 0 0 1rem 0;
-  border: 0;
-`;
-
-const UserProfileWrapper = styled.div`
-  display: flex;
-  padding: 0.8rem;
-  background-color: ${MAIN_COLOR_BASE};
-`;
-
-const UserProfileContainer = styled.div`
-  width: 70%;
-  padding: 0.3rem 0.5rem;
-  border-radius: 0.5rem;
-  display: flex;
-  align-items: center;
-  background-color: ${MAIN_COLOR_BASE};
-
-  &:hover {
-    cursor: pointer;
-    background-color: #393940;
-  }
-`;
-
-const ProfilePicture = styled.img`
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  margin-right: 10px;
-`;
-
-const UserName = styled(DefaultP)`
-  font-weight: bold;
-`;
-
-const ChatRoomDiv = styled.div`
-  margin: 0.5rem;
-  border-radius: 1rem;
-  padding: 0.4rem 0.5rem;
-  display: flex;
-  align-items: center;
-
-  &:hover {
-    cursor: pointer;
-    background-color: #393940;
-  }
-`;
+import { ReactComponent as SettingIcon } from '../../../assets/images/setting_gear.svg';
+import {
+  DetailNav,
+  ChatListNav,
+  ChatRoomDiv,
+  SettingDiv,
+  ServerNameDiv,
+  UserName,
+  Divider,
+  UserProfileContainer,
+  UserProfileWrapper,
+  ProfilePicture,
+} from './style';
 
 export default function NavDetail() {
   const [chatRoomList, setChatRoomList] = useState<Array<any>>([]);
@@ -102,6 +41,9 @@ export default function NavDetail() {
     serverId: state.getServerList.selectedServerId,
     serverName: state.getServerList.selectedServerName,
   }));
+  const selectedChatRoomId = useSelector(
+    (state: RootStateType) => state.updateChatRoom.chatRoomId,
+  );
   const accessTokenPlain = parseToken(accessToken);
   const [userName, userTag] = accessTokenPlain.nickname.split('#');
 
@@ -125,6 +67,7 @@ export default function NavDetail() {
     };
     asyncGetChatListWrapper().then(() => {});
   }, [serverId, accessToken]);
+
   return (
     <DetailNav>
       <ServerNameDiv>
@@ -140,8 +83,9 @@ export default function NavDetail() {
           채팅채널
         </DefaultBoldPCustom>
         {chatRoomList ? (
-          chatRoomList.map((chatRoom: any) => (
+          chatRoomList.map((chatRoom: GetChatRoomListResponseType) => (
             <ChatRoomDiv
+              isSelected={selectedChatRoomId === chatRoom.id}
               key={chatRoom.id}
               onClick={() => {
                 dispatch(
@@ -155,6 +99,9 @@ export default function NavDetail() {
               <DefaultPCustom fontColor={COMMENT_LIGHT_COLOR} fontSize={1}>
                 🍪 {chatRoom.chatroom_name}
               </DefaultPCustom>
+              <SettingDiv>
+                <SettingIcon height="100%" fill="white" />
+              </SettingDiv>
             </ChatRoomDiv>
           ))
         ) : (

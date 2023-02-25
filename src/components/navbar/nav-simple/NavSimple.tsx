@@ -1,75 +1,19 @@
 import { useEffect, DragEvent, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Tooltip } from '@mui/material';
-import styled from 'styled-components';
 import {
   asyncGetServerList,
   select,
-  getServerResponse,
   updateServerList,
+  getServerListResponseType,
 } from '../../../store/reducers/getServerReducer';
 import { CreateServerModal } from '../../modals/create-server-modal';
 import HomeIcon from '../../../assets/images/home.svg';
 import { ReactComponent as ServerAdderIcon } from '../../../assets/images/server-adder.svg';
 import DefaultServerIcon from '../../../assets/images/default-server.svg';
-import { MAIN_COLOR_BASE, THEME_COLOR } from '../../../assets/colors';
 import store, { RootStateType } from '../../../store/configureStore';
-
-const SNACKCHAT_API_URL = process.env.REACT_APP_SNACKCHAT_API_URL;
-const SimpleNav = styled.nav`
-  background-color: ${MAIN_COLOR_BASE};
-  padding: 0.75rem 1rem;
-  border-width: 0;
-  border-right-width: 0.25rem;
-  border-style: solid;
-  border-image: linear-gradient(
-      to bottom,
-      rgba(233, 168, 84, 1),
-      rgba(20, 20, 21, 1)
-    )
-    1 100%;
-  min-width: 3rem;
-  width: 3rem;
-  height: auto;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  overflow-y: scroll;
-  -ms-overflow-style: none;
-
-  &::-webkit-scrollbar {
-    display: none;
-  }
-`;
-
-const Divider = styled.hr`
-  width: 2.5rem;
-  border-top: 0.1rem solid #bbb;
-`;
-
-interface ServerProfileDivProps {
-  serverId: number;
-  selectedServerId: number;
-}
-
-const ServerProfileDiv = styled.div<ServerProfileDivProps>`
-  width: 3rem;
-  height: 3rem;
-  border: ${(props) =>
-    props.serverId === props.selectedServerId
-      ? `0.2rem solid ${THEME_COLOR}`
-      : 'none'};
-  border-radius: 30%;
-  background-color: #36383f;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  &:hover {
-    cursor: pointer;
-    transform: scale(1.1);
-  }
-`;
+import { SNACKCHAT_API_URL } from '../../../services/snackchat-api/constants';
+import { SimpleNav, ServerProfileDiv, Divider } from './style';
 
 const ServerProfileList = () => {
   const dispatch = useDispatch();
@@ -99,21 +43,27 @@ const ServerProfileList = () => {
     dispatch(updateServerList(newServerProfiles));
   };
 
+  const handleServerProfileDivClick = (
+    serverInfo: getServerListResponseType,
+  ) => {
+    dispatch(
+      select({
+        serverName: serverInfo.server_name,
+        serverId: serverInfo.id,
+      }),
+    );
+  };
+
   return serverList ? (
     <>
-      {serverList.map((serverInfo: getServerResponse, index) => (
+      {serverList.map((serverInfo: getServerListResponseType, index) => (
         <div key={serverInfo.id} style={{ margin: '0.4rem 0' }}>
           <Tooltip title={serverInfo.server_name} placement="right" arrow>
             <ServerProfileDiv
               serverId={serverInfo.id}
               selectedServerId={selectedServerId}
               onClick={() => {
-                dispatch(
-                  select({
-                    serverName: serverInfo.server_name,
-                    serverId: serverInfo.id,
-                  }),
-                );
+                handleServerProfileDivClick(serverInfo);
               }}
               onDragStart={(e: DragEvent<HTMLDivElement>) =>
                 onDragStart(e, index)

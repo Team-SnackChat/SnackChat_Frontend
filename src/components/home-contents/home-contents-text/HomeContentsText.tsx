@@ -1,14 +1,10 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useSelector } from 'react-redux';
-import styled from 'styled-components';
 import { RootStateType } from '../../../store/configureStore';
 import {
-  MAIN_COLOR_BASE,
-  MAIN_COLOR_DARK,
   TEXT_FIELD_DISABLED_COLOR,
   COMMENT_LIGHT_COLOR,
   COMMENT_DARK_COLOR,
-  THEME_COLOR,
 } from '../../../assets/colors';
 import { DefaultBoldP, DefaultPCustom } from '../../../assets/styles';
 import UserDefaultProfile from '../../../assets/images/user_default_profile.svg';
@@ -17,105 +13,18 @@ import {
   getChatRoomLogList,
   ChatLogResponseType,
 } from '../../../services/snackchat-api/getChatRoomLogList';
-
-const SNACKCHAT_API_URL = process.env.REACT_APP_SNACKCHAT_API_URL;
-
-const ContentsTextDiv = styled.div`
-  background-color: ${MAIN_COLOR_BASE};
-  width: 100%;
-  margin: 1.5rem 0;
-  flex-shrink: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: end;
-`;
-
-const ChatRoomNameDiv = styled.div`
-  align-self: flex-start;
-  margin-left: 1rem;
-`;
-
-const ChatRoomBodyDiv = styled.div`
-  height: 100%;
-  padding: 0 1.5rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: end;
-`;
-
-interface ChatLogSectionProps {
-  height: number;
-}
-
-const ChatLogSection = styled.section<ChatLogSectionProps>`
-  width: 100%;
-  height: ${(props) => props.height}rem;
-  background-color: ${MAIN_COLOR_BASE};
-  display: flex;
-  flex-direction: column;
-  justify-content: end;
-`;
-
-const ChatLogScrollDiv = styled.div`
-  overflow-y: scroll;
-
-  &::-webkit-scrollbar {
-    width: 0.3rem;
-    background-color: ${MAIN_COLOR_DARK};
-  }
-
-  &::-webkit-scrollbar-thumb {
-    border-radius: 0.5rem;
-    background-color: ${THEME_COLOR};
-  }
-`;
-
-const ChatBox = styled.article`
-  width: 100%;
-  min-height: 3rem;
-  margin-bottom: 1.2rem;
-  display: flex;
-
-  &:hover {
-    opacity: 70%;
-  }
-`;
-
-const ChatLogContainer = styled.div`
-  width: 100%;
-  margin-left: 0.5rem;
-  display: flex;
-  flex-direction: column;
-`;
-
-const ChatLogHeader = styled.div`
-  display: flex;
-  margin-bottom: 0.2rem;
-`;
-
-interface AlertNewMessageDivProps {
-  displayOption: string;
-}
-
-const AlertNewMessageDiv = styled.div<AlertNewMessageDivProps>`
-  position: fixed;
-  bottom: 5rem;
-  right: 4rem;
-  height: 1rem;
-  padding: 1rem;
-  border-radius: 1rem;
-  background-color: ${THEME_COLOR};
-  display: ${(props) => props.displayOption};
-
-  &:hover {
-    cursor: pointer;
-    transform: scale(1.1);
-  }
-
-  @media screen and (max-width: 767px) {
-    display: none;
-  }
-`;
+import { SNACKCHAT_API_URL } from '../../../services/snackchat-api/constants';
+import {
+  ContentsTextDiv,
+  ChatRoomNameDiv,
+  ChatLogScrollDiv,
+  ChatLogContainer,
+  ChatLogHeader,
+  ChatLogSection,
+  ChatRoomBodyDiv,
+  ChatBox,
+  AlertNewMessageDiv,
+} from './style';
 
 export default function HomeContentsText() {
   const [webSocket, setWebSocket] = useState<WebSocket | null>(null);

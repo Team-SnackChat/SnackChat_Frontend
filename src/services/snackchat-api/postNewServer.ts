@@ -1,7 +1,5 @@
 import axios from 'axios';
-
-const SNACKCHAT_API_URL = process.env.REACT_APP_SNACKCHAT_API_URL;
-const SNACKCHAT_TEST_URL = process.env.REACT_APP_COOKIE_TEST_URL;
+import { SNACKCHAT_API_URL } from './constants';
 
 interface PostNewServerProps {
   token: string;
@@ -11,16 +9,12 @@ interface PostNewServerProps {
 
 export const postNewServer = async (props: PostNewServerProps) => {
   try {
-    console.log(props.serverProfile);
-    console.log(typeof props.serverProfile);
     let serverProfile;
     const reader = new FileReader();
     reader.readAsDataURL(props.serverProfile);
     reader.onloadend = () => {
       serverProfile = reader.result;
     };
-    console.log(serverProfile);
-    console.log(typeof serverProfile);
     if (SNACKCHAT_API_URL) {
       const response = await axios.post(
         `${SNACKCHAT_API_URL}/chats/servers/create/`,

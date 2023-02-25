@@ -1,0 +1,3 @@
+export const SNACKCHAT_API_URL = process.env.REACT_APP_SNACKCHAT_API_URL;
+export const KAKAO_REST_API_KEY = process.env.REACT_APP_KAKAO_LOGIN_API_KEY;
+export const KAKAO_REDIRECT_URL = process.env.REACT_APP_KAKAO_REDIRECT_URL;
