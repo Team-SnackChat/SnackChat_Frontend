@@ -19,23 +19,6 @@ import {
   CSMSubmitButton,
 } from './style';
 
-// 이미지 깜빡임을 없애기위해 추가했으나
-// 필요없었던 코드
-// const CSMSelectedServerImageDivContainer = React.memo(
-//   ({
-//     imageObject,
-//     handleImageClick,
-//   }: {
-//     imageObject: string;
-//     handleImageClick: () => void;
-//   }) => (
-//     <CSMSelectedServerImageDiv
-//       backgroundImage={imageObject}
-//       onClick={handleImageClick}
-//     />
-//   ),
-// );
-
 export default function CreateServerModal({ isOpen, handleClose }: ModalProps) {
   const [newServerName, setNewServerName] = useState<string>('');
   const [selectedImage, setSelectedImage] = useState<Blob | MediaSource | null>(
