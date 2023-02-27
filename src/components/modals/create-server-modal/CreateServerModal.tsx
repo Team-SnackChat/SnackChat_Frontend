@@ -113,7 +113,7 @@ export default function CreateServerModal({ isOpen, handleClose }: ModalProps) {
             )}
             <input
               type="file"
-              accept=".png, .jpg, .svg, .jpeg"
+              accept=".png, .jpg, .jpeg"
               ref={fileInputRef}
               style={{ display: 'none' }}
               onChange={handleFileInputChange}

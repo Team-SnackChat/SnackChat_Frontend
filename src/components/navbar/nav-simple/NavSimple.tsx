@@ -74,6 +74,7 @@ const ServerProfileList = () => {
             >
               <img
                 alt="server-img"
+                style={{ width: '100%', borderRadius: '30%' }}
                 src={`${SNACKCHAT_API_URL}${serverInfo.server_profile}`}
                 onError={(event) => {
                   event.currentTarget.src = DefaultServerIcon;

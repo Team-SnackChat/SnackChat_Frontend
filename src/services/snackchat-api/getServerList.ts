@@ -12,6 +12,7 @@ export const getServerList = async (props: GetServerListProps) => {
         headers: { Authorization: `Bearer ${props.token}` },
         withCredentials: true,
       });
+      console.dir(response.data);
       return response.data;
     }
   } catch (e) {
